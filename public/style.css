@@ -81,3 +81,25 @@
   :where([draggable="true"]) {
     -webkit-user-drag: element;
   }
+html {
+  font-size: 16px;
+
+}
+body {
+  font-size: 1rem;
+}
+.wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+}
+.nav-ol {
+  display: flex;
+  flex-direction: row;
+  
+}
