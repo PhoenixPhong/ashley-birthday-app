@@ -6,8 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AshleyLynnOfficial</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="script.js"></script>
+  <style>
+    @import url('http://fonts.cdnfonts.com/css/battara');
+    @import url('http://fonts.cdnfonts.com/css/svarge');
+</style>
+
 </head>
+
 <body>
 <div class="wrapper">
   <header class="header">
@@ -15,7 +20,11 @@
       <h1>Ashley Lynn</h1>
     </div>
     <nav class="nav">
+      <button id="previous-scene">
+        PREVIOUS SCENE
+      </button>
       <ol class="nav-ol">
+
         <div class="nav-item">
           <a href="#about">About</a>
         </div>
@@ -46,16 +55,143 @@
         <div class="nav-item">
           <a href="#contact">Contact</a>
         </div>
+        
       </ol>
+      <button id="next-scene">
+        NEXT SCENE
+      </button>
+
     </nav>
   </header>
-  <main>
-    <section></section>
-    <section></section>
-    <section></section>
-    <section></section>
-    <section></section>
+  <main class="scroll-container">
+      <section class="scroll-section" id="About">
+      <div>
+        <h3 class="section-content-header">
+          Ashley-Lynn
+        </h3>    
+      </div>
+      <div>
+        <p>A letter to my best friend...</p>
+      </div>
+    <div>
+      <button>=></button>
+    </div>
+    </section>
+    <section class="scroll-section" id="Adventurer">
+      <div>
+        <div>
+          <h2>The Adventurer</h2>
+        </div>
+        <div class="lasse-grid">
+          <div class="memory-image" id="adventure-image-1">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\public\329092_1980980200315_112387290_o.jpg">
+          </div>
+          <div class="memory-image" id="adventure-image-2">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\Travel-adventures\29594412_10211104195256917_6244384941373602583_n.jpg">
+          </div>
+          <div class="memory-image" id="adventure-image-3">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\Travel-adventures\137528927_10217875064524417_6009635414369409414_n.jpg">
+          </div>
+          <div class="memory-image" id="adventure-image-4">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\public\family-pup.jpg">
+          </div>
+          <div class="memory-image" id="adventure-image-5">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\public\family-24.jpg">
+          </div>
+          <div class="memory-image" id="adventure-image-6">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\public\image001.jpg">
+          </div>
+        </div>
+    </section>
+    <section class="scroll-section">
+      <div>
+        <h2>Family</h2>
+      </div>
+      <div class="lasse-grid">
+        <div class="memory-image" id="adventure-image-1">
+          <img src="C:\Users\jdpta\Documents\Ashley-40\public\family-pup.jpg">
+        </div>
+        <div class="memory-image" id="adventure-image-2">
+          <img src="C:\Users\jdpta\Documents\Ashley-40\public\family-24.jpg">
+        </div>
+        <div class="memory-image" id="adventure-image-3">
+          <img src="C:\Users\jdpta\Documents\Ashley-40\public\image001.jpg">
+        </div>
+        <div class="memory-image" id="adventure-image-4">
+          <img src="C:\Users\jdpta\Documents\Ashley-40\public\family-1.jpg">
+        </div>
+        <div class="memory-image" id="adventure-image-5">
+          <img src="C:\Users\jdpta\Documents\Ashley-40\public\family-7.jpg">
+        </div>
+        <div class="memory-image" id="adventure-image-6">
+          <img src="C:\Users\jdpta\Documents\Ashley-40\public\family-12.jpg">
+        </div>
+      </div>
+    </section>
+    <section class="lasse-grid">
+      <div>
+        <h2>Then and Now</h2>
+        <div class="lasse-grid">
+          <div class="memory-image" id="adventure-image-1">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\public\1766_001 (1).jpg">
+          </div>
+          <div class="memory-image" id="adventure-image-2">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\public\1769_0011024_1.jpg">
+          </div>
+          <div class="memory-image" id="adventure-image-3">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\public\1779_001.jpg">
+          </div>
+          <div class="memory-image" id="adventure-image-4">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\public\family-pup.jpg">
+          </div>
+          <div class="memory-image" id="adventure-image-5">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\public\family-24.jpg">
+          </div>
+          <div class="memory-image" id="adventure-image-6">
+            <img src="C:\Users\jdpta\Documents\Ashley-40\public\image001.jpg">
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="scroll-section">
+      <div>
+        <h2>Secret</h2>
+      </div>
+    </section>
+    <section class="scroll-section">
+      <h2>Gallery</h2>
+      <div>
+        <img src="C:\Users\jdpta\Documents\Ashley-40\329092_1980980200315_112387290_o.jpg">
+      </div>
+    </section>
+
+     <!-- Photo upload form  -->
+    <section class="scroll-section">
+      <div>
+        <form id="upload-form">
+      <div>
+          <label>Name</label>
+          <input type="text" name="name">
+      </div>
+        <div>
+          <label>Files</label>
+          <input type="file" multiple="multiple" name="files" id="files-input">
+        </div>
+        <div>
+          <label>Message</label>
+          <textarea name="message"></textarea>
+        </div>
+        <div>
+          <button type="submit">Submit</button>
+        </div>
+          </form>
+      </div>
+      <div id="upload-preview"></div>
+
+      </section>
   </main>
 </div>
+<script src="script.js"></script>
+<script src="upload.js"></script>
 </body>
 </html>
