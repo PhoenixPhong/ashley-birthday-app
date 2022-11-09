@@ -11,7 +11,3 @@
 - [Main Horizontal Scroll Example](https://lassepedersen.biz/)
 - [More Horizontal Scroll Examples](https://www.awwwards.com/inspiration/search?text=horizontal%20scroll&type=element)
 - [Aesthetic Photo Galleries Collection](https://www.awwwards.com/awwwards/collections/image-gallery-and-slideshows/)
-
-## Contact
-- Send a text message here (soon if possible): ----> **(240) 452-0233**
-- Or send an email to: **redwhiteblack0@protonmail.com**
