@@ -1,0 +1,115 @@
+@keyframes endScreen1 {
+    from {
+      opacity: 0.5;
+      transform: translateY(10rem);
+    } to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+}
+
+#section__endscreen {
+  position: relative;
+}
+
+.endscreen-final-heading {
+  position: absolute;
+  top: 50%;
+  left: 0;
+
+  width: 100%;
+
+  text-align: center;
+
+  color: var(--col_white);
+
+  font-size: 2.5rem;
+
+  text-shadow: -4px 4px 2px rgba(0, 0, 0, 0.35);
+
+  z-index: 3000;
+
+  animation: endScreen1 2.4s ease-in;
+}
+
+.endscreen-final-word-purple{
+  padding-bottom: 4px;
+
+  border-bottom: 4px solid blueviolet;
+}
+
+.endscreen-final-word-red {
+  padding-bottom: 4px;
+
+  border-bottom: 4px solid #F71735;
+}
+
+.endscreen-message {
+    width: 62.5vw;
+    max-width: 75vw;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 5rem;
+    padding-top: 5rem;
+
+    align-self: flex-start;
+  }
+
+  .endscreen-message-heading {
+    font-size: 5rem;
+
+    color: var(--col-red);
+    text-shadow: -0.15rem 0.15rem 2px rgba(0, 0, 0, 0.35);
+
+    margin-bottom: 2.5rem;
+    font-style: italic;
+  }
+
+  .endscreen-message-body {
+    font-size: 2.5rem;
+    font-style: italic;
+  }
+
+  #endscreen-btn {
+    margin-top: 2.5rem;
+    background-color: #FF579F;
+  }
+
+  .end-screen-rerun-app-img {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--col_white);
+
+    left: 50%;
+    
+    margin-top: 2.5rem;
+
+    transform: translate(-50%, 0);
+    width: 4.25rem;
+    height: 4.25rem;
+
+    cursor: pointer;
+
+    border-radius: 100vmax;
+
+    overflow: hidden;
+
+    box-shadow: -2px 2px 4px crimson, 2px 2px 4px crimson;
+    transition: all 0.2s ease-in;
+  }
+
+  .end-screen-rerun-app-img:hover {
+    transform: translate(-50%, -0.5rem);
+    box-shadow: -4px 4px 6px crimson, 4px 4px 6px crimson;
+  }
+
+  .end-screen-rerun-app-img img {
+    width: 100%;
+    object-fit: contain;
+
+  }

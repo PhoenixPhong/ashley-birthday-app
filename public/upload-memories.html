@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wish Ashley A Happy Birthday</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.cdnfonts.com/css/futura-std-4" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=block" rel="stylesheet">
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="css/main/root.css">
+    <link rel="stylesheet" href="css/upload/style.css">
+</head>
+<body>
+    <div id="gallery-upload-page">
+        <div class="gallery-header">
+            <h2>Send Ashley Your Memories!</h2>
+        </div>
+        <div class="gallery-upload-form-container">
+            <form class="gallery-upload-form" id="gallery-upload-form">
+                <div class="gallery-upload-form-input-container">
+                    <label>Name</label>
+                    <input 
+                        type="text"
+                        name="name"
+                        placeholder="name..."
+                    >
+                </div>
+                <div class="gallery-upload-form-input-container">
+                    <label>Email</label>
+                    <input 
+                        type="email"
+                        name="email"
+                        placeholder="your@email.com"
+                    >
+                </div>
+                <div class="gallery-upload-file-handler">
+                    <div id="gallery-upload-file-input" class="gallery-upload-form-input-container">
+                        <label for="gallery-file-input">Add Images / Videos</label>
+                        <div class="gallery-upload-file-handler-camera-container">
+                            <img src="camera-drawing.png" alt="">
+                        </div>
+                        <input 
+                            id="gallery-file-input"
+                            type="file"
+                            multiple="multiple"
+                            accept="image/*, video/*"
+                            name="gallery-files"
+                        >
+                    </div> 
+                </div>
+                <div id="gallery-upload-preview">
+
+                </div>
+                <div id="gallery-upload-message-input" class="gallery-upload-form-input-container">
+                    <textarea name="message" placeholder="Message..."></textarea>
+                </div>
+                <div>
+                    <button class="btn" type="submit">Upload</button>
+                </div>
+            </form>
+        </div>
+        <div id="camera-capture-view-container" class="hidden">
+            <div id="camera-capture-view-container-inner">
+                <div id="camera-capture-view-preview">
+                    <video id="camera-capture-video"></video>
+                    <!-- <canvas id="camera-capture-view-preview-canvas"></canvas> -->
+                </div>
+                <div id="camera-capture-controls">
+                    <div id="camera-capture-switch-btn" class="camera-capture-icon">
+                        <img src="switch-camera-drawing.png" alt="">
+                    </div>
+                    <div id="camera-capture-rec-btn" class="camera-capture-icon">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle fill="black" cx="50" cy="50" r="50" />
+                            <circle id="record-btn-recording-light" fill="white" cx="50" cy="50" r="25" />
+                        </svg>
+                    </div>
+                    <div id="camera-capture-close-btn" class="camera-capture-icon">
+                        <img src="close-drawing.png" alt="">
+                    </div>
+                </div>
+                <p class="tooltip">Hold to Record Video!</p>
+            </div>
+        </div>
+</div>
+
+<div id="gallery-upload-form-post-submit-modal">
+    <div id="gallery-upload-form-post-submit-modal-inner" class="gallery-upload-form-post-submit-modal-inner">
+        <button id="gallery-upload-form-post-submit-modal-add-btn" class="gallery-upload-form-post-submit-modal-add-btn"></button>
+    </div>
+</div>
+    <script src="js/utils.js" type="module"></script>
+    <script src="js/upload/script.js" type="module"></script>
+</body>
+</html>
