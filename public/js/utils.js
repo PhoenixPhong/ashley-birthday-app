@@ -1,7 +1,31 @@
+export const colorArr = [
+    "#0CCE6B",
+    "#DCED31",
+    "#DCED31",
+    "#0C4767",
+    "#52D1DC",
+    "#1B2021",
+    "#F19953",
+    "#2D93AD",
+    "#291720",
+    "#1AC8ED",
+    "#6622CC"
+]
+
 export const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
 }
+
+export function throttle(fn, delay) {
+    let time = Date.now();
+    return (...args) => { 
+      if (time + delay - Date.now() < 0) {
+          fn(...args);
+          time = Date.now()
+      }
+    }
+} 
 
 export const dataURLtoFile = (dataurl, filename) => {
  
@@ -18,7 +42,7 @@ export const dataURLtoFile = (dataurl, filename) => {
     return new File([u8arr], filename, {type:mime});
 }
 
-export const setFileAttributes = (file, basePath = "https://ashley-birthday-public.s3.amazonaws.com/user-uploads") => {
+export const setFileAttributes = (file, showControls = false, shouldAutoPlay = false, basePath = "https://ashley-birthday-public.s3.amazonaws.com/user-uploads") => {
     let fileEl = null
 
     if(file.type.includes("image")) {
@@ -28,7 +52,9 @@ export const setFileAttributes = (file, basePath = "https://ashley-birthday-publ
         const fileElSource = document.createElement("source");
         fileEl = document.createElement("video");
         fileEl.setAttribute("loop", "loop");
-        fileEl.setAttribute("autoplay", "autoplay");
+
+        if(shouldAutoPlay) {fileEl.setAttribute("autoplay", "autoplay")};
+        if(showControls) {fileEl.setAttribute("controls", "controls")};
         fileEl.setAttribute("muted", "muted");
         fileElSource.setAttribute("src", `${basePath}/${file.name}`);
         fileElSource.setAttribute("type", file.type);

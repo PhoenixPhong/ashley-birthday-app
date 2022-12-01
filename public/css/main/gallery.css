@@ -80,7 +80,7 @@
 
 
 
-  #user-upload-gallery-corner-view > .user-upload-gallery-corner-img > img {
+  .corner-img-default-style {
     width: 90%;
     height: 90%;
 
@@ -91,6 +91,13 @@
     object-fit: cover;
 
     transition: all 0.2s ease-in;
+  }
+
+  .cloud-view-scrolled-img {
+      /* width: 75%; */
+      height: 75%;
+      border-radius: 0;
+      object-fit: "contain";
   }
 
   .upload-scroll-instructions {
@@ -750,6 +757,8 @@
     overflow: hidden;
     border-radius: 1vmax;
 
+    cursor: pointer;
+
     z-index: 6000;
     transition: all 800ms ease;
   }
@@ -773,6 +782,25 @@
     object-fit: cover;
     border-radius: inherit;
     transition: opacity 800ms ease, transform 800ms ease;
+  } 
+
+  .upload-grid-expanded-view-box-selected {
+    opacity: 1;
+    position: absolute;
+    height: 100vh;
+
+    top: 0;
+    left: 2.5rem;
+
+    z-index: 7400;
+  }
+
+  .upload-grid-expanded-view-box-selected > img, video {
+    opacity: 1;
+    height: 100%;
+    object-fit: contain;
+    border-radius: inherit;
+    transition: all 800ms ease;
   } 
 
   /* .upload-grid-expanded-view-box:hover {

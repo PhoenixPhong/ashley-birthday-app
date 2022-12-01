@@ -162,59 +162,6 @@
     .lasse-layout-photo-grid > div {
       position: absolute;
     }
-  
-    #lasse-img-0 {
-      height: 100vh;
-      width: 30vw;
-      top: 0;
-      right: 5%;
-  
-      margin: 0;
-    }
-  
-    #lasse-img-1 {
-      height: 50vh;
-      width: 17.5vw;
-      top: 50vh;
-      right: 25%;
-    }
-  
-    #lasse-img-2 {
-      height: 62.5vh;
-      width: 16vw;
-      top: 37.5vh;
-      right: 2.5%;
-    }
-  
-    #lasse-img-3 {
-      height: 100vh;
-      width: 30vw;
-      top: 0;
-      right: 5%;
-  
-      margin: 0;
-    }
-  
-    #lasse-img-4 {
-      height: 50vh;
-      width: 17.5vw;
-      top: 50vh;
-      right: 25%;
-    }
-  
-    #lasse-img-5 {
-      height: 45vh;
-      width: 33vh;
-      top: 25vh;
-      right: 5%;
-    }
-  
-    #lasse-img-6 {
-      height: 62.5vh;
-      width: 16vw;
-      top: 37.5vh;
-      right: 2.5%;
-    }
 
 #memory-expanded-view {
     display: none;

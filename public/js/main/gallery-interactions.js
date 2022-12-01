@@ -1,4 +1,5 @@
 import {setFileAttributes} from "../utils";
+import { urls } from "../config";
 
 const runScriptGalleryInteractions = () => {
 const galleryDisplayContainerEl = document.getElementById("section__user-upload-gallery");
@@ -22,7 +23,7 @@ const messageContainerTextBody = document.querySelector(".upload-gallery-message
 const gridLayoutContainerEl = document.querySelector(".upload-gallery-grid-layout-container");
 const gridLayoutCloseBtnEl = document.getElementById("grid-gallery-close-btn");
 const gridLayoutGridContainerEl = document.getElementById("upload-gallery-grid-layout-grid");
-const gridLayoutGridContainerExpandedEl = document.getElementById("upload-gallery-grid-layout-grid-expanded");
+let gridLayoutGridContainerExpandedEl = document.getElementById("upload-gallery-grid-layout-grid-expanded");
 
 
 const galleryUploadInstructions = document.getElementById("upload-scroll-instructions");
@@ -96,8 +97,14 @@ nextSceneBtnEl.onclick = () => {
 }
 
 const renderGridViewExpanded = (upload) => {
-    console.log("Expanded view upload: ", upload)
+    console.log("Expanded view upload: ", upload);
+    gridLayoutGridContainerExpandedEl = document.getElementById("upload-gallery-grid-layout-grid-expanded");
     gridLayoutGridContainerExpandedEl.classList.remove("hidden");
+    // gridLayoutGridContainerExpandedEl.innerHTML = `
+    // <div id="upload-gallery-grid-layout-grid-expanded-inner">
+    //     <div id="upload-gallery-grid-layout-expanded-text"></div>
+    // </div>
+    // `
 
     const gridLayoutGridContainerCloseEl = document.createElement("div");
     gridLayoutGridContainerCloseEl.innerHTML = `
@@ -121,8 +128,8 @@ const renderGridViewExpanded = (upload) => {
 
     const gridLayoutExpandedText = document.getElementById("upload-gallery-grid-layout-expanded-text");
 
-    const messageParagraphs = upload.message.split("\n\n");
-    messageParagraphs.forEach((p) => {
+    const messageParagraphs = [`From: ${upload.name}`, ...upload.message.split("\n\n")];
+    messageParagraphs.forEach((p, i) => {
         const messageWords = p.split(" ");
         const messagePEl = document.createElement("p");
         
@@ -134,7 +141,7 @@ const renderGridViewExpanded = (upload) => {
             const randFontSize = Math.random() * (2.25 - 1.75) + 1.75;
 
             const randMargin = {
-                left: Math.floor(Math.random() * 5),
+                left: Math.floor(Math.random() * 1),
                 right: Math.floor(Math.random() * 5)
             }
 
@@ -142,10 +149,10 @@ const renderGridViewExpanded = (upload) => {
 
             wordSpan.textContent = word;
 
-            wordSpan.style.fontSize = `${randFontSize}rem`;
+            wordSpan.style.fontSize = i === 0 ? "2.5rem" : `${randFontSize}rem`;
 
-            wordSpan.style.marginLeft = `${randMargin.left}px`;
-            wordSpan.style.marginRight = `${randMargin.right}px`;
+            wordSpan.style.marginLeft = i === 0 ? "0" : `${randMargin.left}px`;
+            wordSpan.style.marginRight = i === 0 ? "0" : `${randMargin.right}px`;
 
             if(i % randNum === 0 || word.includes("Ashley")) {
                 classes.push("letter-opening-colored")
@@ -159,19 +166,13 @@ const renderGridViewExpanded = (upload) => {
         })
         gridLayoutExpandedText.append(messagePEl);
     })
-    
-
-
-    const gridMap = {
-        tiles: []
-    }
-
-    let lastY = 0;
 
     const gridDims = gridLayoutGridContainerExpandedInnerEl.getBoundingClientRect();
     const gridTextDims = gridLayoutExpandedText.getBoundingClientRect();
 
     const gridTextHeightVh = (gridTextDims.height / window.innerHeight) * 100;
+
+    let hasSelectedFile = false;
 
     if(upload.files.length > 0) {
         upload.files.forEach((file, i) => {
@@ -203,7 +204,57 @@ const renderGridViewExpanded = (upload) => {
             const tileFileEl = setFileAttributes(file);
 
             tileEl.append(tileFileEl);
+
+            const initTileWidth = tileEl.style.width;
+            const initTileHeight = tileEl.style.height;
+
+            tileEl.onclick = (e) => {
+                e.stopPropagation();
+
+                if(!hasSelectedFile) {
+                    tileEl.style.width = "";
+                    tileEl.style.height = "";
+                    tileEl.style.marginLeft = "0";
+                    tileEl.style.marginTop = "0";
+                    tileEl.style.marginRight = "0";
+                    tileEl.style.marginBottom = "0";
+
+                    tileEl.classList.remove("upload-grid-expanded-view-box")
+                    tileEl.classList.add("upload-grid-expanded-view-box-selected");
+
+                    if(tileEl.children[0].tagName.toLowerCase() === "video") {
+                        tileEl.children[0].setAttribute("controls", "controls");
+                        tileEl.children[0].load();
+                        tileEl.children[0].setAttribute("muted", false);
+                        tileEl.children[0].volume = 1;
+                        tileEl.children[0].play();
+                    }
+                }
+
+                gridLayoutGridContainerExpandedInnerEl.onclick = () => {
+                    const selectedTileEls = document.querySelectorAll(".upload-grid-expanded-view-box-selected");
+                    selectedTileEls.forEach((selectedTile) => {
+                        selectedTile.classList.add("upload-grid-expanded-view-box")
+                        selectedTile.classList.remove("upload-grid-expanded-view-box-selected");
+
+                        if(selectedTile.children[0].tagName.toLowerCase() === "video") {
+                            selectedTile.children[0].setAttribute("controls", false);
+                            selectedTile.children[0].setAttribute("muted", "muted");
+                            selectedTile.children[0].volume = 0;
+                            selectedTile.children[0].pause();
+                        }
+                    })
+
+                    hasSelectedFile = false
+                }
+
+                hasSelectedFile = true;
+
+            }
+
             gridLayoutGridContainerExpandedInnerEl.append(tileEl);
+
+
         })
 
         console.log("Grid Dims: ", gridDims, gridTextDims);
@@ -232,24 +283,13 @@ const renderGridViewExpanded = (upload) => {
 
     gridLayoutGridContainerCloseEl.onclick = () => {
         gridLayoutGridContainerExpandedEl.classList.add("hidden");
-        gridLayoutGridContainerCloseEl.style.display = "none";
         gridLayoutGridContainerExpandedEl.innerHTML = `
         <div id="upload-gallery-grid-layout-grid-expanded-inner">
                                     <div id="upload-gallery-grid-layout-expanded-text"></div>
-                                    <div id="upload-gallery-grid-expanded-close-btn" class="upload-gallery-close-btn-container">
-                                        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-                                            <g class="layer">
-                                                <line fill="none" fill-opacity="0.31" id="svg_9" points="null" stroke="#B3A394" stroke-linecap="round" stroke-width="200" transform="matrix(1 0 0 1 0 0) matrix(0.724968 -0.186276 0.144386 0.526919 22.5691 165.826)" x1="87.25" x2="452.98" y1="456.17" y2="134.02"/>
-                                                <line fill="none" fill-opacity="0.31" id="svg_8" points="null" stroke="#B3A394" stroke-linecap="round" stroke-width="200" transform="matrix(1 0 0 1 0 0) rotate(85.5673 229 266) matrix(0.724968 -0.186276 0.144386 0.526919 22.5691 165.826)" x1="47.78" x2="413.51" y1="432.73" y2="110.57"/>
-                                                <line fill="none" fill-opacity="0.31" id="svg_5" points="null" stroke="#B3A394" stroke-linecap="round" stroke-width="70" transform="matrix(1 0 0 1 0 0) matrix(0.854512 -0.213375 0.170187 0.603572 -5.69419 163.726)" x1="48.7" x2="414.43" y1="389.19" y2="67.04"/>
-                                                <line fill="none" fill-opacity="0.31" id="svg_2" points="null" stroke="#FEF9FF" stroke-linecap="round" transform="matrix(1 0 0 1 0 0)" x1="122.93" x2="377.07" y1="123.59" y2="376.41"/>
-                                                <line fill="none" fill-opacity="0.31" id="svg_3" points="null" stroke="#FEF9FF" stroke-linecap="round" stroke-width="200" transform="matrix(1 0 0 1 0 0) matrix(0.724968 -0.186276 0.144386 0.526919 22.5691 165.826)" x1="73.88" x2="439.61" y1="402.1" y2="79.95"/>
-                                                <line fill="none" fill-opacity="0.31" id="svg_7" points="null" stroke="#FEF9FF" stroke-linecap="round" stroke-width="200" transform="matrix(1 0 0 1 0 0) matrix(0.24175 0.708403 -0.514184 0.184678 311.285 10.2105)" x1="90.18" x2="455.91" y1="406.7" y2="84.55"/>
-                                            </g>
-                                           </svg>
-                                    </div>
                                 </div>
         `
+        gridLayoutGridContainerCloseEl.style.display = "none";
+        
     }
 }
 
@@ -285,9 +325,6 @@ const renderGridPreviews = () => {
                 }
             })
             
-            // spanCareWordsEls.forEach((word) => {
-            //     careTextObserver.observe(word);
-            // })
 
             careTextObserver.observe(gridTextHeaderEl);
         }
@@ -327,25 +364,44 @@ const renderGridPreviews = () => {
             const renderPreviewFile = () => {
                 const file = upload.files[previewState.currentIndex];
 
-                    const fileGridElTagType = fileGridFileEl.tagName.toLowerCase();
+                    const fileGridElTagType = fileGridEl.children[0].tagName.toLowerCase();
                     console.log(fileGridElTagType)
 
                     if(file.type.includes("video")) {
+                        const newFileGridFileEl = setFileAttributes(file);
                         if(fileGridElTagType === "img") {
-                            fileGridEl.innerHTML = "";
-                            const newFileGridFileEl = setFileAttributes(file);
+                            clearInterval(previewInterval);
                             fileGridEl.append(newFileGridFileEl);
+                            fileGridEl.children[0].remove();
                         } else {
-                            fileGridEl.children[0].children[0].setAttribute("src", `https://ashley-birthday-public.s3.amazonaws.com/user-uploads/${file.name}`)
+                            fileGridEl.children[0].src = `${urls.s3BucketPath}/user-uploads/${file.name}`;
                         }
+                        // const newFileGridFileEl = setFileAttributes(file);
+                        // console.log("New file: ", newFileGridFileEl)
+                        // newFileGridFileEl.classList.add("cloud-view-scrolled-img");
+                        // fileGridEl.children[0].children[0].src = null;
+                        // fileGridEl.children[0].children[0].remove()
+                        
+                        fileGridEl.children[0].setAttribute("muted", "muted")
+                        fileGridEl.children[0].load();
+                        fileGridEl.children[0].volume = 0;
+                        fileGridEl.children[0].play();
+                        // newFileGridFileEl.load();
+                        // newFileGridFileEl.play();
+                        // fileGridEl.append(newFileGridFileEl);
 
                     } else if (file.type.includes("image")) {
+                        console.log("File Grid Tag Type: ", fileGridElTagType);
                         if(fileGridElTagType === "video") {
-                            fileGridEl.innerHTML = "";
+                            console.log("Img from video!!!")
+                            clearInterval(previewInterval);
                             const newFileGridFileEl = setFileAttributes(file);
+                            // newFileGridFileEl.classList.add("cloud-view-scrolled-img");
+                            fileGridEl.children[0].remove();
                             fileGridEl.append(newFileGridFileEl);
+                            
                         } else {
-                            fileGridEl.children[0].setAttribute("src", `https://ashley-birthday-public.s3.amazonaws.com/user-uploads/${file.name}`)
+                            fileGridEl.children[0].setAttribute("src", `${urls.s3BucketPath}/user-uploads/${file.name}`)
                         }
 
                     }
@@ -356,7 +412,9 @@ const renderGridPreviews = () => {
 
             fileGridEl.onmouseenter = () => {
                 previewState.currentIndex = ((previewState.currentIndex + 1) % upload.files.length)
-                renderPreviewFile();
+                const fileGridElTagName = fileGridEl.children[0].tagName.toLowerCase();
+                console.log("Mouseenter")
+                // renderPreviewFile();
                 previewInterval = setInterval(() => {
                     renderPreviewFile()
                 }, 1000)
@@ -400,9 +458,6 @@ const closeCloudView = () => {
     bigCloudBackgroundEl.style.opacity = "0";
     bigCloudBackgroundEl.style.transform = "rotate(-360)"
     uploadGalleryTitleEl.style.zIndex = "100";
-    // cornerImgContainerEl.parentElement.style.zIndex = "500";
-    // cornerImgContainerEl.style.zIndex = "500";
-    // galleryUploadInstructions.style.zIndex = "500";
 
     allCloudTexts.forEach((text) => {
         text.textContent = "???";
@@ -419,7 +474,6 @@ const closeCloudView = () => {
         started: false
     }
 
-    // cornerImgContainerEl.parentElement.style.zIndex = "500";
     for(let style in initCornerImgParentStyles) {
         cornerImgContainerEl.parentElement.style[style] = initCornerImgParentStyles[style]
     }
@@ -432,7 +486,6 @@ const closeCloudView = () => {
 }
 
 galleryUploadCloseBtnEl.onclick = () => {
-    console.log("Hello")
     closeCloudView();
 }
 
@@ -440,9 +493,44 @@ galleryUploadCloseBtnEl.onclick = () => {
 let photoTimer = null;
 
 galleryDisplayContainerEl.onwheel = throttle((e) => {
-    console.log(e.deltaY)
+    const handleMediaChange = (file, containerEl) => {
+        const containerChildEl = containerEl.children[0];
+        if(file.type.includes("video")) {
+            containerEl.innerHTML = "";
+            const newFilePreviewEl = setFileAttributes(file);
+            newFilePreviewEl.classList.add("cloud-view-scrolled-img");
+            containerEl.append(newFilePreviewEl);
+            
 
-    if(e.deltaY > 5) {
+        } else if (file.type.includes("image")) {
+            if(containerChildEl.tagName.toLowerCase() === "video") {
+                containerEl.innerHTML = "";
+                const newFilePreviewEl = setFileAttributes(file);
+                newFilePreviewEl.classList.add("cloud-view-scrolled-img");
+                containerEl.append(newFilePreviewEl);
+            } else {
+                containerEl.children[0].setAttribute("src", `${urls.s3BucketPath}/user-uploads/${file.name}`)
+            }
+        }
+
+        cornerImgContainerEl.children[0].onmouseenter = () => {
+            clearInterval(photoTimer)
+            if(cornerImgContainerEl.children[0].tagName.toLowerCase() === "video") {
+                cornerImgContainerEl.children[0].setAttribute("controls", "controls");
+                cornerImgContainerEl.children[0].setAttribute("muted", false);
+            }
+        }
+
+        cornerImgContainerEl.children[0].ontouchstart = () => {
+            clearInterval(photoTimer)
+            if(cornerImgContainerEl.children[0].tagName.toLowerCase() === "video") {
+                cornerImgContainerEl.children[0].setAttribute("controls", "controls");
+                cornerImgContainerEl.children[0].setAttribute("muted", false);
+            }
+        }
+    }
+
+    const handleScrollUpdate = (inc = 1) => {
         clearInterval(photoTimer);
         let photoState = {
             iterationCount: 0
@@ -466,24 +554,23 @@ galleryDisplayContainerEl.onwheel = throttle((e) => {
                 cornerImgContainerEl.parentElement.style.height = "100vh";
                 cornerImgContainerEl.parentElement.style.borderRadius = "15px";
                 cornerImgContainerEl.parentElement.style.boxShadow = `-2.5rem 1.5rem 0 black, -5rem 3rem 0 blueviolet, -5.25rem 3rem 2px blueviolet, -5.5rem 3rem 2px blueviolet`
-
-                cornerImgContainerEl.children[0].style.width = "75";
-                cornerImgContainerEl.children[0].style.height = "75%";
-                cornerImgContainerEl.children[0].style.borderRadius = "0";
-                cornerImgContainerEl.children[0].style.objectFit = "contain";
+                
+                cornerImgContainerEl.children[0].classList.remove("corner-img-default-style");
+                cornerImgContainerEl.children[0].classList.add("cloud-view-scrolled-img");
         }
 
         galleryDisplayState.started = true;
 
+        const cloud0 = document.getElementById(`cloud-0`);
         const cloud1 = document.getElementById(`cloud-1`);
         const cloud2 = document.getElementById(`cloud-2`);
         const cloud3 = document.getElementById(`cloud-3`);
         const cloud4 = document.getElementById(`cloud-4`);
 
-        galleryDisplayState.scrollCount++;
+        galleryDisplayState.scrollCount += inc;
         const userUploadItemIndex = Math.abs(galleryDisplayState.scrollCount % userUploads.length);
         const colorIndex = Math.abs(galleryDisplayState.scrollCount % colors.length)
-
+        
 
         allCloudTexts.forEach((text) => {
             text.textContent = "???";
@@ -495,15 +582,38 @@ galleryDisplayContainerEl.onwheel = throttle((e) => {
         cornerImgContainerEl.style.backgroundColor = colors[colorIndex];
 
         if(userUploads[userUploadItemIndex].files.length > 0) {
-            cornerImgContainerEl.children[0].src = `https://ashley-birthday-public.s3.amazonaws.com/user-uploads/${userUploads[userUploadItemIndex].files[0].name}`;
+            const firstFile = userUploads[userUploadItemIndex].files[0];
 
-            photoState.iterationCount++;
+            handleMediaChange(firstFile, cornerImgContainerEl)
 
-            photoTimer = setInterval(() => {
-                const photoIndex = photoState.iterationCount % userUploads[userUploadItemIndex].files.length;
-                cornerImgContainerEl.children[0].src = `https://ashley-birthday-public.s3.amazonaws.com/user-uploads/${userUploads[userUploadItemIndex].files[photoIndex].name}`;
-                photoState.iterationCount++; 
-            }, 2500)
+            if(userUploads[userUploadItemIndex].files[1]) {
+                photoState.iterationCount++;
+
+                
+
+                photoTimer = setInterval(() => {
+                    const fileIndex = photoState.iterationCount % userUploads[userUploadItemIndex].files.length;
+                    const nextFile = userUploads[userUploadItemIndex].files[fileIndex];
+                    console.log("Next file: ", nextFile);
+                    handleMediaChange(nextFile, cornerImgContainerEl);
+                    photoState.iterationCount++; 
+                }, 2500)
+
+
+
+                cornerImgContainerEl.onmouseleave = () => {
+                    clearInterval(photoTimer);
+                    photoTimer = setInterval(() => {
+                        const fileIndex = photoState.iterationCount % userUploads[userUploadItemIndex].files.length;
+                        const nextFile = userUploads[userUploadItemIndex].files[fileIndex];
+                        handleMediaChange(nextFile, cornerImgContainerEl);
+                        photoState.iterationCount++; 
+                    }, 2500)
+                }
+            }
+            
+
+            
         }
 
         messageContainerEl.onmouseenter = () => {
@@ -540,7 +650,11 @@ galleryDisplayContainerEl.onwheel = throttle((e) => {
         messageContainerTextBody.children[0].textContent = userUploads[userUploadItemIndex].message.split(" ").slice(3).join(" ");
         // messageContainerTextOpening.style.color = colors[colorIndex];
 
-        cloud1.style.top = `-20%`;
+        
+
+
+        if(inc > 0) {
+            cloud1.style.top = `-20%`;
         cloud1.style.left = "33%";
         // cloud1.style.opacity = "0";
 
@@ -563,118 +677,9 @@ galleryDisplayContainerEl.onwheel = throttle((e) => {
             // cloud1.display = "none";
             cloud1.style.left = "-10%";
             cloud1.style.top = "75%";
-        }, 225);
-    }
-
-    else if(e.deltaY < -5) {
-        clearInterval(photoTimer);
-        let photoState = {
-            iterationCount: 0
-        }
-        // for (const num of [1, 2, 3] ) {
-        //     const cloud = document.getElementById(`cloud-${num}`);
-        //     cloud.style.top = `${-7.5 * (4 - num)}%`
-        //     cloud.style.right = `${-7.5 * (4 - num)}%`
-        // }
-
-        if(!galleryDisplayState.started) {
-            galleryUploadInstructions.style.display = "none";
-            uploadGalleryTitleEl.style.zIndex = "0";
-            galleryUploadCloseBtnEl.style.display = "block";
-            galleryUploadCloseBtnEl.style.zIndex = "3000";
-
-            blackBackgroundEl.style.opacity = "1";
-            bigCloudBackgroundEl.style.opacity = "1";
-            bigCloudBackgroundEl.style.transform = "rotate(-45deg)";
-
-            cornerImgContainerEl.parentElement.style.bottom = "0";
-                cornerImgContainerEl.parentElement.style.right = "0";
-                cornerImgContainerEl.parentElement.style.width = "100vh";
-                cornerImgContainerEl.parentElement.style.height = "100vh";
-                cornerImgContainerEl.parentElement.style.borderRadius = "15px";
-                cornerImgContainerEl.parentElement.style.boxShadow = `-2.5rem 1.5rem 0 black, -5rem 3rem 0 blueviolet, -5.25rem 3rem 2px blueviolet, -5.5rem 3rem 2px blueviolet`
-
-                cornerImgContainerEl.children[0].style.width = "75";
-                cornerImgContainerEl.children[0].style.height = "75%";
-                cornerImgContainerEl.children[0].style.borderRadius = "0";
-                cornerImgContainerEl.children[0].style.objectFit = "contain";
-        }
-
-        galleryDisplayState.started = true;
-
-        const cloud0 = document.getElementById(`cloud-0`);
-        const cloud1 = document.getElementById(`cloud-1`);
-        const cloud2 = document.getElementById(`cloud-2`);
-        const cloud3 = document.getElementById(`cloud-3`);
-
-        const cloud1Text = document.getElementById(`cloud-1-text`);
-        cloud1Text.children[0].textContent = userUploads[0].name;
-
-        galleryDisplayState.scrollCount--;
-        const userUploadItemIndex = Math.abs(galleryDisplayState.scrollCount % userUploads.length);
-        console.log("Backwards index: ", userUploadItemIndex);
-        const userUploadSelected = userUploads[userUploads.length - 1 - userUploadItemIndex]
-        const colorIndex = Math.abs(galleryDisplayState.scrollCount % colors.length);
-
-        const allCloudTexts = document.querySelectorAll(".upload-gallery-cloud-text p");
-        allCloudTexts.forEach((text) => {
-            text.textContent = "???";
-        })
-
-        const nextCloudText = document.querySelector(`#cloud-1 .upload-gallery-cloud-text p`);
-        nextCloudText.textContent = userUploadSelected.name // userUploads[userUploads.length % (galleryDisplayState.selectedCloudIndex - 2)].name;
-        nextCloudText.style.color = colors[colors.length - 1 -colorIndex];
-        cornerImgContainerEl.style.backgroundColor = colors[colors.length - 1 -colorIndex];
-
-        if(userUploads[userUploadItemIndex].files.length > 0) {
-            cornerImgContainerEl.children[0].src = `https://ashley-birthday-public.s3.amazonaws.com/user-uploads/${userUploadSelected.files[0].name}`;
-
-            photoState.iterationCount++;
-
-            photoTimer = setInterval(() => {
-                const photoIndex = photoState.iterationCount % userUploads[userUploadItemIndex].files.length;
-                cornerImgContainerEl.children[0].src = `https://ashley-birthday-public.s3.amazonaws.com/user-uploads/${userUploads[userUploadItemIndex].files[photoIndex].name}`;
-                photoState.iterationCount++; 
-            }, 2500)
-
-            
-        }
-
-
-        messageContainerEl.onmouseenter = () => {
-            cloudWrapperEls.forEach((cloud) => {
-                cloud.style.opacity = "0.15"
-            })
-
-            allCloudTexts.forEach((text) => {
-                text.style.opacity = "0.15";
-            })
-        }
-
-        messageContainerEl.onmouseleave = () => {
-            cloudWrapperEls.forEach((cloud) => {
-                cloud.style.opacity = "1"
-            })
-
-            allCloudTexts.forEach((text) => {
-                text.style.opacity = "1";
-            })
-        }
-
-        cloudWrapperEls.forEach((cloud) => {
-            cloud.onmouseenter = () => {
-                cloud.style.opacity = "1"
-            }
-
-            allCloudTexts.forEach((text) => {
-                text.style.opacity = "1";
-            })
-        })
-
-        messageContainerTextOpening.children[0].textContent = userUploads[userUploadItemIndex].message.split(" ").slice(0, 3).join(" ");
-        messageContainerTextBody.children[0].textContent = userUploads[userUploadItemIndex].message.split(" ").slice(3).join(" ");
-
-        cloud0.display = "block";
+        }, 500);
+        } else {
+            cloud0.display = "block";
         cloud0.opacity = "1";
         cloud0.style.top = `0`;
         cloud0.style.left = "-10rem";
@@ -697,12 +702,29 @@ galleryDisplayContainerEl.onwheel = throttle((e) => {
             // cloud1.display = "none";
             cloud3.style.left = "-10%";
             cloud3.style.top = "75%";
-        }, 250);
+        }, 500);
+        }
     }
-}, 250)
+
+
+
+    if(e.deltaY > 5) {
+        handleScrollUpdate();
+    }
+
+    else if(e.deltaY < -5) {
+        handleScrollUpdate(-1)
+    }
+}, 500)
 
 gridLayoutCloseBtnEl.onclick = () => {
-    gridLayoutGridContainerEl.innerHTML = "";
+    gridLayoutGridContainerEl.innerHTML = `
+    <div id="upload-gallery-grid-layout-grid-expanded" class="hidden">
+                                <div id="upload-gallery-grid-layout-grid-expanded-inner">
+                                    <div id="upload-gallery-grid-layout-expanded-text"></div>
+                                </div>
+                            </div>
+    `;
     gridLayoutGridContainerEl.scrollTop = "0";
     gridLayoutContainerEl.style.display = "none";
     gridLayoutCloseBtnEl.style.display = "none";
@@ -759,20 +781,6 @@ selectViewIconFirstEl.onclick = () => {
 }
 }
 
-// const renderClouds = () => {
-//     console.log(cloudWrapperEls);
-//     cloudWrapperEls.forEach((cloud) => {
-//         cloud.onclick = () => {
-//             console.log("Clicked cloud");
-//             console.log(cornerImgContainerEl.children[0])
-//             cornerImgContainerEl.children[0].src = "cloud-drawing.png"
-//         }
-//     })
-
-
-//}
-
-// renderClouds();
 
 const getUserUploadObjects = async () => {
     const response = await fetch("/api/public/uploads");

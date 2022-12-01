@@ -1,3 +1,13 @@
+import {
+    letterMainScenes
+} from "../config";
+
+import {
+    colorArr,
+    throttle,
+    setFileAttributes
+} from "../utils";
+
 const runScriptMemories = () => {
     const lasseGridEls = document.querySelectorAll(".lasse-layout-photo-grid");
 const lasseImgEls = document.querySelectorAll(".img_lasse");
@@ -19,83 +29,28 @@ const memoryExpandedState = {
     hasReachedEnd: false
 }
 
-const letterLines = [
-    "A letter",
-    "To My Best Friend",
-    "If I had the gift of poetry...",
-    "If I could write you a song",
-    "The most amazing view...",
-    "You"
-]
+const letterLines = letterMainScenes.map((scene) => scene.displayHeading)
 
-const letterSubtitles = [
-    "1 Motivational lorem ipsum sit dolor motivational quotes",
-    "2 Motivational lorem ipsum sit dolor motivational quotes",
-    "3 Motivational lorem ipsum sit dolor motivational quotes",
-    "4 Motivational lorem ipsum sit dolor motivational quotes",
-    "5 Motivational lorem ipsum sit dolor motivational quotes",
-    "6 Motivational lorem ipsum sit dolor motivational quotes",
-]
+const letterSubtitles = letterMainScenes.map((scene) => scene.displaySubtitlte)
 
-const colorArr = [
-    "#0CCE6B",
-    "#DCED31",
-    "#DCED31",
-    "#0C4767",
-    "#52D1DC",
-    "#1B2021",
-    "#F19953",
-    "#2D93AD",
-    "#291720",
-    "#1AC8ED",
-    "#6622CC"
-]
+const memoryItemsArr = [];
 
-const memoryItemsArr = [
-    {memory_id: 0, item_id: 0, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/1/cover-4-02-1440x1924-q75.jpg", title: "My First Memory", heading: "Memory 1", subtitle: "Inspirational Quote 1", body: "Write about a memory here with lots of details about the picture and provide context and write more and more and pour your heart out here", transitions: "Down"},
-    {memory_id: 0, item_id: 1, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/2/pm_cover115-05-1420x1900-q75.jpg", title: "Test New Title", heading: "Memory 2",  subtitle: "Inspirational Quote 2", body: "Another text with lots of content that should be regarded as my true and honest feelings in all states of being and truth that spill from my mind", transitions: "Right"},
-    {memory_id: 0, item_id: 2, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/3/pm_cover115-03-1420x1900-q75.jpg", title: "My First Memory (12)", heading: "Memory 3",  subtitle: "Inspirational Quote 3", body: "Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Down", endScene: true},
+letterMainScenes.forEach((scene, i) => {
+    scene.expandedViewSections.forEach((view, j) => {
+        memoryItemsArr.push({
+            memory_id: i,
+            item_id: j,
+            src: view.src,
+            title: "",
+            heading: view.heading,
+            subtitle: view.subtitle,
+            body: view.body,
+            transition: "Down"
+        })
+    })
+})
 
-    {memory_id: 1, item_id: 0, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/1/cover-4-02-1440x1924-q75.jpg", title: "My First Memory", heading: "Memory 1", subtitle: "Inspirational Quote 1", body: "Write about a memory here with lots of details about the picture and provide context and write more and more and pour your heart out here", transitions: "Left"},
-    {memory_id: 1, item_id: 1, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/2/pm_cover115-05-1420x1900-q75.jpg", title: "Test New Title", heading: "Memory 2",  subtitle: "Inspirational Quote 2", body: "Another text with lots of content that should be regarded as my true and honest feelings in all states of being and truth that spill from my mind", transitions: "Down"},
-    {memory_id: 1, item_id: 2, src: "https://lassepedersen.biz/thumbs/editorial/maya-maty-caroline/5/180831_glitter_11_032-1440x2158-q75.jpg", title: "My First Memory (12)", heading: "Memory 3",  subtitle: "Inspirational Quote 3", body: "Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Right",},
-    {memory_id: 1, item_id: 3, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/3/pm_cover115-03-1420x1900-q75.jpg", title: "My First Memory (12)", heading: "Memory 4",  subtitle: "Inspirational Quote 4", body: "444444 More Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Up", endScene: true},
-
-    {memory_id: 2, item_id: 0, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/1/cover-4-02-1440x1924-q75.jpg", title: "My First Memory", heading: "Memory 1", subtitle: "Inspirational Quote 1", body: "Write about a memory here with lots of details about the picture and provide context and write more and more and pour your heart out here", transitions: "Left"},
-    {memory_id: 2, item_id: 1, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/2/pm_cover115-05-1420x1900-q75.jpg", title: "Test New Title", heading: "Memory 2",  subtitle: "Inspirational Quote 2", body: "Another text with lots of content that should be regarded as my true and honest feelings in all states of being and truth that spill from my mind", transitions: "Down"},
-    {memory_id: 2, item_id: 2, src: "https://lassepedersen.biz/thumbs/editorial/maya-maty-caroline/5/180831_glitter_11_032-1440x2158-q75.jpg", title: "My First Memory (12)", heading: "Memory 3",  subtitle: "Inspirational Quote 3", body: "Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Right",},
-    {memory_id: 2, item_id: 3, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/3/pm_cover115-03-1420x1900-q75.jpg", title: "My First Memory (12)", heading: "Memory 4",  subtitle: "Inspirational Quote 4", body: "444444 More Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Up", endScene: true},
-
-    {memory_id: 3, item_id: 0, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/1/cover-4-02-1440x1924-q75.jpg", title: "My First Memory", heading: "Memory 1", subtitle: "Inspirational Quote 1", body: "Write about a memory here with lots of details about the picture and provide context and write more and more and pour your heart out here", transitions: "Left"},
-    {memory_id: 3, item_id: 1, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/2/pm_cover115-05-1420x1900-q75.jpg", title: "Test New Title", heading: "Memory 2",  subtitle: "Inspirational Quote 2", body: "Another text with lots of content that should be regarded as my true and honest feelings in all states of being and truth that spill from my mind", transitions: "Down"},
-    {memory_id: 3, item_id: 2, src: "https://lassepedersen.biz/thumbs/editorial/maya-maty-caroline/5/180831_glitter_11_032-1440x2158-q75.jpg", title: "My First Memory (12)", heading: "Memory 3",  subtitle: "Inspirational Quote 3", body: "Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Right",},
-    {memory_id: 3, item_id: 3, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/3/pm_cover115-03-1420x1900-q75.jpg", title: "My First Memory (12)", heading: "Memory 4",  subtitle: "Inspirational Quote 4", body: "444444 More Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Up", endScene: true},
-
-    {memory_id: 4, item_id: 0, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/1/cover-4-02-1440x1924-q75.jpg", title: "My First Memory", heading: "Memory 1", subtitle: "Inspirational Quote 1", body: "Write about a memory here with lots of details about the picture and provide context and write more and more and pour your heart out here", transitions: "Left"},
-    {memory_id: 4, item_id: 1, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/2/pm_cover115-05-1420x1900-q75.jpg", title: "Test New Title", heading: "Memory 2",  subtitle: "Inspirational Quote 2", body: "Another text with lots of content that should be regarded as my true and honest feelings in all states of being and truth that spill from my mind", transitions: "Down"},
-    {memory_id: 4, item_id: 2, src: "https://lassepedersen.biz/thumbs/editorial/maya-maty-caroline/5/180831_glitter_11_032-1440x2158-q75.jpg", title: "My First Memory (12)", heading: "Memory 3",  subtitle: "Inspirational Quote 3", body: "Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Right",},
-    {memory_id: 4, item_id: 3, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/3/pm_cover115-03-1420x1900-q75.jpg", title: "My First Memory (12)", heading: "Memory 4",  subtitle: "Inspirational Quote 4", body: "444444 More Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Up", endScene: true},
-
-    {memory_id: 5, item_id: 0, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/1/cover-4-02-1440x1924-q75.jpg", title: "My First Memory", heading: "Memory 1", subtitle: "Inspirational Quote 1", body: "Write about a memory here with lots of details about the picture and provide context and write more and more and pour your heart out here", transitions: "Left"},
-    {memory_id: 5, item_id: 1, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/2/pm_cover115-05-1420x1900-q75.jpg", title: "Test New Title", heading: "Memory 2",  subtitle: "Inspirational Quote 2", body: "Another text with lots of content that should be regarded as my true and honest feelings in all states of being and truth that spill from my mind", transitions: "Down"},
-    {memory_id: 5, item_id: 2, src: "https://lassepedersen.biz/thumbs/editorial/maya-maty-caroline/5/180831_glitter_11_032-1440x2158-q75.jpg", title: "My First Memory (12)", heading: "Memory 3",  subtitle: "Inspirational Quote 3", body: "Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Right",},
-    {memory_id: 5, item_id: 3, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/3/pm_cover115-03-1420x1900-q75.jpg", title: "My First Memory (12)", heading: "Memory 4",  subtitle: "Inspirational Quote 4", body: "444444 More Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Up", endScene: true},
-
-    // {memory_id: 6, item_id: 0, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/1/cover-4-02-1440x1924-q75.jpg", title: "My First Memory", heading: "Memory 1", subtitle: "Inspirational Quote 1", body: "Write about a memory here with lots of details about the picture and provide context and write more and more and pour your heart out here", transitions: "Left"},
-    // {memory_id: 6, item_id: 1, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/2/pm_cover115-05-1420x1900-q75.jpg", title: "Test New Title", heading: "Memory 2",  subtitle: "Inspirational Quote 2", body: "Another text with lots of content that should be regarded as my true and honest feelings in all states of being and truth that spill from my mind", transitions: "Down"},
-    // {memory_id: 6, item_id: 2, src: "https://lassepedersen.biz/thumbs/editorial/maya-maty-caroline/5/180831_glitter_11_032-1440x2158-q75.jpg", title: "My First Memory (12)", heading: "Memory 3",  subtitle: "Inspirational Quote 3", body: "Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Right",},
-    // {memory_id: 6, item_id: 3, src: "https://lassepedersen.biz/thumbs/editorial/cover-4/3/pm_cover115-03-1420x1900-q75.jpg", title: "My First Memory (12)", heading: "Memory 4",  subtitle: "Inspirational Quote 4", body: "444444 More Random text machine generating strings upon strings and unraveling a universe and the truth that underlies the views we all see in simplicity there is art", transitions: "Up", endScene: true}
-]
-
-function throttle(fn, delay) {
-    let time = Date.now();
-    return (...args) => { 
-      if (time + delay - Date.now() < 0) {
-          fn(...args);
-          time = Date.now()
-      }
-    }
-  } 
+console.log("Test memory items arr: ", memoryItemsArr);
 
 const registerScene = (scene, sceneConfig) => {
     const sceneObserver = new IntersectionObserver((entries, observer) => {
